@@ -1,0 +1,1 @@
+$time_local _,_ $host _,_ $scheme _,_ $request_method _,_ $remote_addr _,_ $remote_user _,_ $request _,_ $status _,_ $body_bytes_sent _,_ $http_referer _,_ $http_user_agent _,_ $http_x_forwarded_for _,_ $request_time
