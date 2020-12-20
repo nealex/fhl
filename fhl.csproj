@@ -68,14 +68,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="core\dictionaries\fhl_dic_admin_panels.cs" />
+    <Compile Include="core\dictionaries\fhl_dic_asp_backdors.cs" />
     <Compile Include="core\dictionaries\fhl_dic_nginx.cs" />
-    <Compile Include="core\dictionaries\fhl_hunting.cs" />
+    <Compile Include="core\dictionaries\fhl_dic_os_commanding.cs" />
+    <Compile Include="core\dictionaries\fhl_dic_php_backdors.cs" />
+    <Compile Include="core\hunting\fhl_hunting.cs" />
     <Compile Include="core\dispatchers\fhl_load_data_from_files.cs" />
     <Compile Include="core\fhl_core.cs" />
     <Compile Include="core\fhl_logfile_instance.cs" />
     <Compile Include="core\fhl_logfile_instance_node.cs" />
     <Compile Include="core\fhl_websrv_conf.cs" />
     <Compile Include="core\fhl_websrv_var.cs" />
+    <Compile Include="core\hunting\fhl_hunting_instance.cs" />
+    <Compile Include="core\hunting\fhl_hunting_result_type.cs" />
+    <Compile Include="core\hunting\fhl_hunting_type.cs" />
     <Compile Include="EditFormatLogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,11 +95,29 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormEditDictionaries.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormEditDictionaries.Designer.cs">
+      <DependentUpon>FormEditDictionaries.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormNumberOfThreadsAtWork.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormNumberOfThreadsAtWork.Designer.cs">
+      <DependentUpon>FormNumberOfThreadsAtWork.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormSettings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSettings.Designer.cs">
       <DependentUpon>FormSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormWhiteIPList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormWhiteIPList.Designer.cs">
+      <DependentUpon>FormWhiteIPList.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,22 +127,32 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormEditDictionaries.resx">
+      <DependentUpon>FormEditDictionaries.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormNumberOfThreadsAtWork.resx">
+      <DependentUpon>FormNumberOfThreadsAtWork.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormSettings.resx">
       <DependentUpon>FormSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormWhiteIPList.resx">
+      <DependentUpon>FormWhiteIPList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -127,6 +162,14 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="resource\icon\bug_9727.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\icon\file_type_nginx_icon_130305.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resource\icon\3592841-cog-gear-general-machine-office-setting-settings_107765.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

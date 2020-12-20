@@ -1,6 +1,7 @@
 ﻿using fhl.core;
 using fhl.core.dictionaries;
 using fhl.core.dispatchers;
+using fhl.core.hunting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,12 +16,52 @@ namespace fhl
 {
     public partial class MainForm : Form
     {
+        
         void addDataToCoreLog(string str, Color c)
         {
             CoreLog.AppendText(str);
             CoreLog.Select(CoreLog.TextLength - str.Length, CoreLog.TextLength);
             CoreLog.SelectionColor = c;
             CoreLog.AppendText("\n");
+        }
+
+        public void valid_format()
+        {
+            addDataToCoreLog("____________________________________________________________________", Color.Green);
+            addDataToCoreLog("Начата валидация формата для лога.", Color.Green);
+            addDataToCoreLog(string.Format("Пользовательская строка (без ковычек): \"{0}\"", fhl_core.ws_cfg.log_format), Color.Green);
+            addDataToCoreLog("Получена следующая строка RegEx выражения: " + fhl_core.getLogFormatPatternRegex(fhl_core.ws_cfg.log_format, fhl_core.ws_cfg.log_vars), Color.Green);
+            addDataToCoreLog("Производим диагностический вывод переменных попорядку, которые были найдены и будут использованы при сканировании:", Color.Green);
+            addDataToCoreLog(string.Format("Всего найдено {0} переменных!", fhl_core.ws_cfg.existVariable.Count), Color.Green);
+            for (int i = 0; i < fhl_core.ws_cfg.existVariable.Count; i++)
+            {
+                addDataToCoreLog(fhl_core.ws_cfg.existVariable[i].var + " -> " + fhl_core.ws_cfg.existVariable[i].value, Color.Green);
+            }
+            addDataToCoreLog("____________________________________________________________________", Color.Green);
+        }
+
+        public void test_out_string()
+        {
+            if (fhl_core.AllCountRequest > 10)
+            {
+                DialogResult dialogResult = MessageBox.Show("Строк очень много (более 10) выдейтсвительно хотите их все вывести в консоль?!", "Предупреждение", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    foreach (fhl_logfile_instance f in fhl_core.Files)
+                    {
+                        for (int i = 0, j = 0; i < f.rows.Count; i++)
+                        {
+                            addDataToCoreLog(f.rows[i].request, Color.Blue);
+                            addDataToCoreLog(string.Format("Всего параметров: {0}", f.rows[i].params_list.Count), Color.Blue);
+                            foreach (fhl_websrv_var cp in f.rows[i].params_list)
+                            {
+                                addDataToCoreLog(string.Format("[{0}]\t{1}\t\t\t\t\t \"{2}\"", j++, cp.var, cp.value), Color.Blue);
+                            }
+                            addDataToCoreLog("", Color.Transparent);
+                        }
+                    }
+                }
+            }
         }
 
         public MainForm()
@@ -50,22 +91,7 @@ namespace fhl
 
         private void валидацияФорматаToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addDataToCoreLog("____________________________________________________________________", Color.Green);
-            addDataToCoreLog("Начата валидация формата для лога.", Color.Green);
-            addDataToCoreLog(string.Format("Пользовательская строка (без ковычек): \"{0}\"", fhl_core.ws_cfg.log_format), Color.Green);
-            addDataToCoreLog("Получена следующая строка RegEx выражения: " + fhl_core.getLogFormatPatternRegex(fhl_core.ws_cfg.log_format, fhl_core.ws_cfg.log_vars), Color.Green);
-            addDataToCoreLog("Производим диагностический вывод переменных попорядку, которые были найдены и будут использованы при сканировании:", Color.Green);
-            addDataToCoreLog(string.Format("Всего найдено {0} переменных!", fhl_core.ws_cfg.existVariable.Count), Color.Green);
-            for (int i = 0; i < fhl_core.ws_cfg.existVariable.Count; i++)
-            {
-                addDataToCoreLog(fhl_core.ws_cfg.existVariable[i].var + " -> " + fhl_core.ws_cfg.existVariable[i].value, Color.Green);
-            }
 
-            //foreach (logVariable ll in CoreScanObject.existVariable)
-            //{
-            //    addDataToCoreLog(ll.var + " -> " + ll.value, Color.Green);
-            //}
-            addDataToCoreLog("____________________________________________________________________", Color.Green);
         }
 
 
@@ -73,6 +99,7 @@ namespace fhl
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             openFileDialog_mainForm.Multiselect = true;
             openFileDialog_mainForm.Filter = "Log files(*.log)|*.log|Text files(*.txt)|*.txt|All files(*.*)|*.*";
             if (openFileDialog_mainForm.ShowDialog() == DialogResult.Cancel)
@@ -84,8 +111,24 @@ namespace fhl
 
             fhl_core.FileNames = openFileDialog_mainForm.FileNames;
             fhl_core.getLogFormatPatternRegex(fhl_core.ws_cfg.log_format, fhl_core.ws_cfg.log_vars);
+
             if (backgroundWorker_loaddata.IsBusy != true)
             {
+                if (fhl_core.MeOpenFiles)
+                {
+                    return;
+                }
+                fhl_core.MeOpenFiles = true;
+
+                if (fhl_core.FilteringOnOpeningFiles)
+                {
+                    addDataToCoreLog("Запросы будут отфильтрованы на этапе загрузки файлов!", Color.Black);
+                    foreach (string wip in fhl_core.WhiteIPList)
+                    {
+                        addDataToCoreLog(String.Format("Запросы с ip адреса {0} будут пропущены!", wip), Color.Black);
+                    }
+                }
+                fhl_core.AllCountRequest = 0;
                 backgroundWorker_loaddata.DoWork += fhl_load_data_from_files.DoWork;
                 backgroundWorker_loaddata.ProgressChanged += loadData_ProgressChanged;
                 backgroundWorker_loaddata.RunWorkerCompleted += loadData_RunWorkerCompleted;
@@ -101,14 +144,11 @@ namespace fhl
 
         public void loadData_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            try
+            if (fhl_core.KernelPanic)
             {
-                toolStripProgressBar1.Value = e.ProgressPercentage;
+                return;
             }
-            catch (System.NullReferenceException ex)
-            {
-
-            }
+            toolStripProgressBar1.Value = e.ProgressPercentage;
         }
 
         private void loadData_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -133,6 +173,7 @@ namespace fhl
             }
             else
             {
+                // MessageBox.Show("Start !!!" + fhl_core.AllCountRequest.ToString());
                 foreach (fhl_logfile_instance f in fhl_core.Files)
                 {
                     addDataToCoreLog("", Color.Red);
@@ -140,13 +181,14 @@ namespace fhl
                     addDataToCoreLog(string.Format("Количество строк: {0}", f.rows.Count()), Color.Red);
                     addDataToCoreLog("", Color.Red);
                 }
-
-
+                // MessageBox.Show("break!!!" + fhl_core.AllCountRequest.ToString());
+                fhl_core.MeOpenFiles = false;
                 using (BackgroundWorker bw = new BackgroundWorker())
                 {
                     if (backgroundWorker_loaddata.IsBusy != true)
                     {
-                        addDataToCoreLog("Начат процесс забора строка в соответсвии с шаблном:", Color.Black);
+                        addDataToCoreLog("Начат процесс разбора строк в соответсвии с шаблном:", Color.Black);
+                        addDataToCoreLog(String.Format("При разборе будет использовано {0} потоков из {1}", fhl_core.ThreadParse, Environment.ProcessorCount), Color.Black);
                         addDataToCoreLog(fhl_core.ws_cfg.log_format, Color.Black);
 
                         toolStripProgressBar1.Maximum = fhl_core.AllCountRequest;
@@ -217,7 +259,6 @@ namespace fhl
 
         private void toolStripStatusLabel2_Click(object sender, EventArgs e)
         {
-
             if (backgroundWorker_loaddata.WorkerSupportsCancellation == true)
             {
                 // Cancel the asynchronous operation.
@@ -227,9 +268,10 @@ namespace fhl
 
         private void начатьАнализToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            addDataToCoreLog("Выпускаем охотника!", Color.GreenYellow);
+            addDataToCoreLog("Выпускаем охотника!", Color.Green);
             using (BackgroundWorker bw = new BackgroundWorker())
             {
+                toolStripProgressBar1.Visible = true;
                 toolStripProgressBar1.Maximum = fhl_core.AllCountRequest;
                 toolStripProgressBar1.Value = 0;
 
@@ -248,8 +290,8 @@ namespace fhl
         {
             if (e.Cancelled == true)
             {
-                addDataToCoreLog("", Color.Red);
-                addDataToCoreLog("Операция загрузки файлов отменена пользователем!", Color.Red);
+                addDataToCoreLog("", Color.Black);
+                addDataToCoreLog("Охота отменена пользователем!", Color.Red);
 
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
@@ -257,43 +299,39 @@ namespace fhl
             }
             else
             {
-                addDataToCoreLog("Анализ логов завершен", Color.Blue);
-                if (fhl_hunting.error_5xx.Count > 0)
+                if (fhl_hunting.results.Count > 0)
                 {
-                    addDataToCoreLog("Найденые 5xx коды ответа сервера:", Color.Red);
-                    foreach (fhl_logfile_instance_node r_5xx in fhl_hunting.error_5xx)
+                    List<fhl_hunting_instance> successAttack = fhl_hunting.results.Where(item => item.final_attack == fhl_hunting_result_type.Success).ToList();
+                    if (successAttack.Count > 0)
                     {
-                        addDataToCoreLog(r_5xx.request, Color.Black);
+                        addDataToCoreLog(String.Format("Хакерам удалось произвести {0} успешных атак!!!", successAttack.Count), Color.Red);
+                        foreach (fhl_hunting_instance ia in successAttack)
+                        {
+                            addDataToCoreLog(String.Format("\nВид атаки: {0}\nСтрока в лог файле:\n{1}\n", ia.type.ToString(), ia.request.request), Color.Red);
+                        }
                     }
-                }
-                else
-                {
-                    addDataToCoreLog("5xx коды ответа сервера не найдены!", Color.Green);
+                    else
+                    {
+                        addDataToCoreLog("Успешных атак охотник не обнаружил!!!", Color.Red);
+                    }
 
-                }
-                if (fhl_hunting.attach_Path_Traversal.Count > 0)
-                {
-                    addDataToCoreLog("Найдены Path_Traversal атаки:", Color.Red);
-                    foreach (fhl_logfile_instance_node ia in fhl_hunting.attach_Path_Traversal)
+                    List<fhl_hunting_instance> FailedAttack = fhl_hunting.results.Where(item => item.final_attack == fhl_hunting_result_type.Failed).ToList();
+                    if (FailedAttack.Count > 0)
                     {
-                        addDataToCoreLog(ia.request, Color.Black);
+                        addDataToCoreLog(String.Format("Хакерам удалось произвести {0} подозрительных запросов!!!", FailedAttack.Count), Color.Green);
+                        foreach (fhl_hunting_instance ia in FailedAttack)
+                        {
+                            addDataToCoreLog(String.Format("\nВид атаки: {0}\nСтрока в лог файле:\n{1}\n", ia.type.ToString(), ia.request.request), Color.Green);
+                        }
+                    }
+                    else
+                    {
+                        addDataToCoreLog("Безуспешных вредоносных запросов к серверу не найдено!!!", Color.Green);
                     }
                 }
                 else
                 {
-                    addDataToCoreLog("Path_Traversal атаки не найдены!", Color.Green);
-                }
-                if (fhl_hunting.attach_XSS.Count > 0)
-                {
-                    addDataToCoreLog("Найденые Path_Traversal попытки:", Color.Red);
-                    foreach (fhl_logfile_instance_node ia in fhl_hunting.attach_XSS)
-                    {
-                        addDataToCoreLog(ia.request, Color.Black);
-                    }
-                }
-                else
-                {
-                    addDataToCoreLog("XSS атаки не найдены!", Color.Green);
+                    addDataToCoreLog("Хакерской активности не обнаружено!!!", Color.Blue);
                 }
             }
 
@@ -305,31 +343,7 @@ namespace fhl
 
         private void тестовыйВыводСтрокToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (fhl_core.AllCountRequest > 10)
-            {
-                DialogResult dialogResult = MessageBox.Show("Строк очень много (более 10) выдейтсвительно хотите их все вывести в консоль?!", "Предупреждение", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    foreach (fhl_logfile_instance f in fhl_core.Files)
-                    {
-                        for (int i = 0, j = 0; i < f.rows.Count; i++)
-                        {
-                            addDataToCoreLog(f.rows[i].request, Color.Blue);
-                            addDataToCoreLog(string.Format("Всего параметров: {0}", f.rows[i].params_list.Count), Color.Blue);
-                            foreach (fhl_websrv_var cp in f.rows[i].params_list)
-                            {
-                                addDataToCoreLog(string.Format("[{0}]\t{1}\t\t\t\t\t \"{2}\"", j++, cp.var, cp.value), Color.Blue);
-                            }
-                            addDataToCoreLog("", Color.Transparent);
-                        }
-                        //foreach(fhl_logfile_instance_node cr in f.rows)
-                        //{
-                        //    addDataToCoreLog(cr.), Color.Blue);
-                        //}
 
-                    }
-                }
-            }
 
         }
 
@@ -348,13 +362,99 @@ namespace fhl
         private void очиститьКонсольToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CoreLog.Clear();
+            addDataToCoreLog("Консоль была очищена!", Color.Black);
         }
 
         private void вОзможностиСистемыToolStripMenuItem_Click(object sender, EventArgs e)
         {
             addDataToCoreLog(string.Format("Количество процессоров в системе: {0}", Environment.ProcessorCount), Color.Blue);
-            addDataToCoreLog(string.Format("Количество потоков рекоммендованное для этой системы: {0}", Environment.ProcessorCount * 32), Color.Blue);
-            addDataToCoreLog(string.Format("Максимальное количестов потоков для этой системы: {0}", Environment.ProcessorCount * 64), Color.Blue);
+        }
+
+        private void белыеIPадресаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormWhiteIPList IP_form = new FormWhiteIPList();
+            IP_form.Owner = this;
+            IP_form.textBox1.Text = String.Join(",", fhl_core.WhiteIPList.ToArray());
+            IP_form.ShowDialog();
+        }
+
+        private void фильтрацияIPНаЭтапеОткрытияToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fhl_core.FilteringOnOpeningFiles = ((ToolStripMenuItem)sender).Checked = !((ToolStripMenuItem)sender).Checked;
+
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            fhl_core.KernelPanic = true;
+        }
+
+        private void последниеРезультатыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void показатьСкрытыеНастройкиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem thisObj = (ToolStripMenuItem)sender;
+            thisObj.Checked = !thisObj.Checked;
+
+        }
+
+
+        private void валидацияФорматаToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            valid_format();
+        }
+
+        private void тестовыйВыводСтрокToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            test_out_string();
+        }
+
+        private void производительностьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormNumberOfThreadsAtWork thf = new FormNumberOfThreadsAtWork();
+            thf.Owner = this;
+            thf.label1.Text = "Выбрано потоков: " + fhl_core.ThreadParse;
+            thf.trackBar1.Minimum = 1;
+            thf.trackBar1.Value = fhl_core.ThreadParse;
+            thf.trackBar1.Maximum = Environment.ProcessorCount;
+            thf.ShowDialog();
+        }
+
+        //public void getNgxDic(object sender, EventArgs e))
+        //{
+
+        //}
+
+        private void nGINXToolStripMenuItem_Click(object sender1, EventArgs e1)
+        {
+            FormEditDictionaries form = new FormEditDictionaries();
+            form.Owner = this;
+            form.boxDictionaries.Text = String.Join("\n", fhl_core.ws_cfg.getLogVars());
+        //    form.button1.Click += new System.EventHandler((object sender, EventArgs e)=> { });
+            form.button1.Click += new System.EventHandler(delegate (object sender, EventArgs e) { 
+                string[] ts2arr = form.boxDictionaries.Text.Split('\n');
+                ts2arr = ts2arr.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                Array.Sort(ts2arr);
+                fhl_core.ws_cfg.setLogVars(ts2arr);
+                form.Close();
+            });
+
+
+            //    string []ts2arr = boxDictionaries.Text.Split('\n');
+            //    ts2arr = ts2arr.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            //    Array.Sort(ts2arr);
+            //    fhl_core.ws_cfg.setLogVars(ts2arr);
+            //    this.Close();
+            form.ShowDialog();
+            ///this.button1.Click += new System.EventHandler(this.button1_Click);
+        }
+
+        private void pHPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

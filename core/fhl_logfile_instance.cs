@@ -33,9 +33,33 @@ namespace fhl.core
             //MessageBox.Show(s);
             string[] tempRows = s.Split(new string[] { fhl_core.EndLineString }, StringSplitOptions.RemoveEmptyEntries);
             //MessageBox.Show(tempRows[1]);
+            int iterActiveRequest = 0;
             foreach (string ss in tempRows)
             {
-                rows.Add(new fhl_logfile_instance_node(ss));
+                ///
+                /// Закоментировано по причине возможных оибочных срабатываний.
+                /// Так как проверяется вся строка запроса и в ней может находиться важная информация.
+                ///
+
+                //if (fhl_core.FilteringOnOpeningFiles)   // Фильтрация запросов на этапе открытия
+                //{
+                //    var tAdd_success = false;
+                //    foreach (string wip in fhl_core.WhiteIPList)
+                //    {
+                //        if (ss.IndexOf(wip) == -1)
+                //        {
+                //            tAdd_success = true;
+                //        }
+                //    }
+                //    if (tAdd_success)
+                //    {
+                //        rows.Add(new fhl_logfile_instance_node(ss));
+                //    }
+                //}
+                //else
+                //{
+                    rows.Add(new fhl_logfile_instance_node(ss));
+                //}
             }
             fhl_core.AllCountRequest += rows.Count;
         }

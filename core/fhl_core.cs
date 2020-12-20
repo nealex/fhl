@@ -17,6 +17,10 @@ namespace fhl.core
         /// Режим отладки
         /// </summary>
         public static bool Debug = true;
+        public static bool Run = false;
+        public static bool MeOpenFiles = false;
+        public static bool KernelPanic = false;
+        public static int ThreadParse = 1;
         /// <summary>
         /// Конфигурация под тот веб сервер который будет вестись анализ.
         /// </summary>
@@ -40,6 +44,12 @@ namespace fhl.core
         /// Список лог файлов
         /// </summary>
         public static string[] FileNames;
+        /// <summary>
+        /// Флаг: нужно ли фильтровать запросы по белому списку ip на этапе открытия файлов.
+        /// </summary>
+        public static bool FilteringOnOpeningFiles = true;      
+
+        public static List<string> WhiteIPList = new List<string>() {"localhost","127.0.0.1"};
 
         public static int AllCountRequest = 0;
 
@@ -55,12 +65,21 @@ namespace fhl.core
         public static string getLogFormatPatternRegex(string UserFormat, fhl_websrv_var[] ServerVar)
         {
             fhl_core.ws_cfg.existVariable.Clear();
+            string tempUserFormat = UserFormat;
             // Опеределяем какие переменные сервера есть в пользовательском формате и их порядковые номера
             for (int i = 0; i < ServerVar.Length; i++)
             {
-                int num = UserFormat.IndexOf(ServerVar[i].var);
+                int num = tempUserFormat.IndexOf(ServerVar[i].var);
                 if (num != -1)
                 {
+                    //// Баг фикс который позволяет исправляет ошибку с однокоренными словами типа $request и $request_body
+                    //// заменяя уже найденное слово звездочками той-же длинны слова.
+                    string repTempString = "";
+                    for(int iterCSVar =0; iterCSVar< ServerVar[i].var.Length; iterCSVar++)
+                    {
+                        repTempString += "*";
+                    }
+                    tempUserFormat = tempUserFormat.Replace(ServerVar[i].var, repTempString);
                     fhl_websrv_var tmp_d = new fhl_websrv_var(ServerVar[i].var, num.ToString());
                     //MessageBox.Show(string.Format("{0} - {1}", tmp_d.var, tmp_d.value));
                     fhl_core.ws_cfg.existVariable.Add(tmp_d);
@@ -82,23 +101,5 @@ namespace fhl.core
 
             return ws_cfg.log_format_regxPattern = UserFormat;
         }
-
-
-
-
-        //public static void loadDataFromFiles(string[] FileNames)
-        //{
-
-        //    //CoreInstance = new globalInstance();
-        //    Files.Clear();     // Очищаем список файлов с логами.
-
-        //    foreach (string file in FileNames)
-        //    {
-        //        Files.Add(new fhl_logfile_instance(file, System.IO.File.ReadAllText(file)));
-
-
-        //    }
-
-        //}
     }
 }

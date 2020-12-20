@@ -11,6 +11,9 @@ namespace fhl.core.dictionaries
     struct fhl_dic_nginx
     {
         public static string default_format_string = "$remote_addr - $remote_user [$time_local] \"$request\" $status $bytes_sent \"$http_referer\" \"$http_user_agent\"";
+
+
+
         public static fhl_websrv_var[] default_format_log_vars = {
             new fhl_websrv_var("$ancient_browser","(.*)"),
             new fhl_websrv_var("$arg_","(.*)"),
