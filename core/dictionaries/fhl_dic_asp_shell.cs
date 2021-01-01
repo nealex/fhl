@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace fhl.core.dictionaries
 {
-    class fhl_dic_asp_backdors
+    class fhl_dic_asp_shell
     {
         public static string[] list = {
             "aspcmd.asp",

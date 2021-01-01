@@ -58,7 +58,7 @@ namespace fhl.core.hunting
                     }
 
                     // Проверка на php шелы.
-                    foreach (string ab in fhl_dic_php_backdors.list)
+                    foreach (string ab in fhl_dic_php_shell.list)
                     {
                         if (REQUEST.value.IndexOf(ab) != -1)
                         {
@@ -66,17 +66,17 @@ namespace fhl.core.hunting
                             {
                                 case 500:
                                 case 200:
-                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.BackdoorExecute, tempRequest)); break;
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.BackdoorExecute, tempRequest, ab)); break;
                                 case 301:
                                 case 302:
                                 case 404:
-                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.BackdoorExecute, tempRequest)); break;
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.BackdoorExecute, tempRequest, ab)); break;
                             };
                         }
                     }
 
-                    // Проверка на выполнение комманд ОС
-                    foreach (string ab in fhl_dic_os_commanding.list)
+                    // Проверка на ASP шелы.
+                    foreach (string ab in fhl_dic_asp_shell.list)
                     {
                         if (REQUEST.value.IndexOf(ab) != -1)
                         {
@@ -84,13 +84,69 @@ namespace fhl.core.hunting
                             {
                                 case 500:
                                 case 200:
-                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.OSCommanding, tempRequest)); break;
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.BackdoorExecute, tempRequest, ab)); break;
                                 case 301:
                                 case 302:
                                 case 404:
-                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.OSCommanding, tempRequest)); break;
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.BackdoorExecute, tempRequest, ab)); break;
                             };
                         }
+                    }
+
+
+                    // Проверка на выполнение универсальных комманд ОС
+                    foreach (string ab in fhl_dic_os_commanding.list)
+                    {
+                        if ((ab.Length > 4) ? (REQUEST.value.IndexOf(ab) != -1) : (REQUEST.value.IndexOf(ab + " ") != -1) || (REQUEST.value.IndexOf(ab + "%20") != -1))
+                        {
+                            switch (HTTP_CODE)
+                            {
+                                case 500:
+                                case 200:
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
+                                case 301:
+                                case 302:
+                                case 404:
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
+                            };
+                        }
+                    }
+
+                    // Проверка на выполнение Unix комманд ОС
+                    foreach (string ab in fhl_dic_os_unix.list)
+                    {
+                        //   if (REQUEST.value.IndexOf(ab) != -1)
+                        if ((ab.Length > 4) ? (REQUEST.value.IndexOf(ab) != -1) : (REQUEST.value.IndexOf(ab + " ") != -1) || (REQUEST.value.IndexOf(ab + "%20") != -1))
+                        {
+                            switch (HTTP_CODE)
+                            {
+                                case 500:
+                                case 200:
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
+                                case 301:
+                                case 302:
+                                case 404:
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
+                            };
+                        }
+                    }
+                    // Проверка на выполнение Windows комманд ОС
+                    foreach (string ab in fhl_dic_os_windows.list)
+                    {
+                        if ((ab.Length > 4) ? (REQUEST.value.IndexOf(ab) != -1) : (REQUEST.value.IndexOf(ab + " ") != -1) || (REQUEST.value.IndexOf(ab + "%20") != -1))
+                        {
+                            switch (HTTP_CODE)
+                            {
+                                case 500:
+                                case 200:
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
+                                case 301:
+                                case 302:
+                                case 404:
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
+                            };
+                        }
+
                     }
                 }
             }

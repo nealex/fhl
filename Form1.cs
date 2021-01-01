@@ -16,13 +16,24 @@ namespace fhl
 {
     public partial class MainForm : Form
     {
-        
+
         void addDataToCoreLog(string str, Color c)
         {
             CoreLog.AppendText(str);
             CoreLog.Select(CoreLog.TextLength - str.Length, CoreLog.TextLength);
             CoreLog.SelectionColor = c;
             CoreLog.AppendText("\n");
+        }
+
+        void previewTeapot(Color ct)
+        {
+            addDataToCoreLog("                      ", ct);
+            addDataToCoreLog("   ▄▄█▄▄             ", ct);
+            addDataToCoreLog(" ▄▀██████▌▄▄█▀ ▄▄▄   ", ct);
+            addDataToCoreLog(" █ ▐███████▀   ███▀▌ ", ct);
+            addDataToCoreLog("  ▀▀█████▀      ███▀  ", ct);
+            addDataToCoreLog("", ct);
+            addDataToCoreLog("", ct);
         }
 
         public void valid_format()
@@ -68,16 +79,10 @@ namespace fhl
         {
             InitializeComponent();
             addDataToCoreLog("Запуск программы!!!", Color.Black);
-            addDataToCoreLog("___________________________________________________________________", Color.Gray);
-            addDataToCoreLog("                      ", Color.White);
-            addDataToCoreLog("   ▄▄█▄▄             ", Color.White);
-            addDataToCoreLog(" ▄▀██████▌▄▄█▀ ▄▄▄   ", Color.White);
-            addDataToCoreLog(" █ ▐███████▀   ███▀▌ ", Color.White);
-            addDataToCoreLog("  ▀▀█████▀      ███▀  ", Color.White);
-            addDataToCoreLog("", Color.White);
-            addDataToCoreLog("", Color.White);
-            addDataToCoreLog("Завариваем чаек, и начинаем смотреть на скучные и длинные логи :)", Color.Gray);
-            addDataToCoreLog("___________________________________________________________________", Color.Gray);
+            addDataToCoreLog("___________________________________________________________________", Color.Black);
+            previewTeapot(Color.Silver);
+            addDataToCoreLog("Завариваем чаек, и начинаем смотреть на скучные и длинные логи :)", Color.Black);
+            addDataToCoreLog("___________________________________________________________________", Color.Black);
         }
 
 
@@ -86,16 +91,6 @@ namespace fhl
         {
 
         }
-
-
-
-        private void валидацияФорматаToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
-
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -112,7 +107,7 @@ namespace fhl
             fhl_core.FileNames = openFileDialog_mainForm.FileNames;
             fhl_core.getLogFormatPatternRegex(fhl_core.ws_cfg.log_format, fhl_core.ws_cfg.log_vars);
 
-            if (backgroundWorker_loaddata.IsBusy != true)
+            if (backgroundWorker.IsBusy != true)
             {
                 if (fhl_core.MeOpenFiles)
                 {
@@ -129,10 +124,10 @@ namespace fhl
                     }
                 }
                 fhl_core.AllCountRequest = 0;
-                backgroundWorker_loaddata.DoWork += fhl_load_data_from_files.DoWork;
-                backgroundWorker_loaddata.ProgressChanged += loadData_ProgressChanged;
-                backgroundWorker_loaddata.RunWorkerCompleted += loadData_RunWorkerCompleted;
-                backgroundWorker_loaddata.RunWorkerAsync();
+                backgroundWorker.DoWork += fhl_load_data_from_files.DoWork;
+                backgroundWorker.ProgressChanged += loadData_ProgressChanged;
+                backgroundWorker.RunWorkerCompleted += loadData_RunWorkerCompleted;
+                backgroundWorker.RunWorkerAsync();
 
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = true;
@@ -161,6 +156,7 @@ namespace fhl
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
+
             }
             else if (e.Error != null)
             {
@@ -185,7 +181,7 @@ namespace fhl
                 fhl_core.MeOpenFiles = false;
                 using (BackgroundWorker bw = new BackgroundWorker())
                 {
-                    if (backgroundWorker_loaddata.IsBusy != true)
+                    if (backgroundWorker.IsBusy != true)
                     {
                         addDataToCoreLog("Начат процесс разбора строк в соответсвии с шаблном:", Color.Black);
                         addDataToCoreLog(String.Format("При разборе будет использовано {0} потоков из {1}", fhl_core.ThreadParse, Environment.ProcessorCount), Color.Black);
@@ -259,10 +255,10 @@ namespace fhl
 
         private void toolStripStatusLabel2_Click(object sender, EventArgs e)
         {
-            if (backgroundWorker_loaddata.WorkerSupportsCancellation == true)
+            if (backgroundWorker.WorkerSupportsCancellation == true)
             {
                 // Cancel the asynchronous operation.
-                backgroundWorker_loaddata.CancelAsync();
+                backgroundWorker.CancelAsync();
             }
         }
 
@@ -307,7 +303,7 @@ namespace fhl
                         addDataToCoreLog(String.Format("Хакерам удалось произвести {0} успешных атак!!!", successAttack.Count), Color.Red);
                         foreach (fhl_hunting_instance ia in successAttack)
                         {
-                            addDataToCoreLog(String.Format("\nВид атаки: {0}\nСтрока в лог файле:\n{1}\n", ia.type.ToString(), ia.request.request), Color.Red);
+                            addDataToCoreLog(String.Format("\nВид атаки: {0} ({1})\nСтрока в лог файле:\n{2}\n", ia.type.ToString(),ia.signature, ia.request.request), Color.Red);
                         }
                     }
                     else
@@ -321,7 +317,7 @@ namespace fhl
                         addDataToCoreLog(String.Format("Хакерам удалось произвести {0} подозрительных запросов!!!", FailedAttack.Count), Color.Green);
                         foreach (fhl_hunting_instance ia in FailedAttack)
                         {
-                            addDataToCoreLog(String.Format("\nВид атаки: {0}\nСтрока в лог файле:\n{1}\n", ia.type.ToString(), ia.request.request), Color.Green);
+                            addDataToCoreLog(String.Format("\nВид атаки: {0} ({1})\nСтрока в лог файле:\n{2}\n", ia.type.ToString(),ia.signature, ia.request.request), Color.Green);
                         }
                     }
                     else
@@ -423,38 +419,36 @@ namespace fhl
             thf.ShowDialog();
         }
 
-        //public void getNgxDic(object sender, EventArgs e))
-        //{
-
-        //}
-
         private void nGINXToolStripMenuItem_Click(object sender1, EventArgs e1)
         {
             FormEditDictionaries form = new FormEditDictionaries();
             form.Owner = this;
             form.boxDictionaries.Text = String.Join("\n", fhl_core.ws_cfg.getLogVars());
-        //    form.button1.Click += new System.EventHandler((object sender, EventArgs e)=> { });
-            form.button1.Click += new System.EventHandler(delegate (object sender, EventArgs e) { 
+            form.button1.Click += new System.EventHandler(delegate (object sender, EventArgs e)
+            {
                 string[] ts2arr = form.boxDictionaries.Text.Split('\n');
                 ts2arr = ts2arr.Where(x => !string.IsNullOrEmpty(x)).ToArray();
                 Array.Sort(ts2arr);
                 fhl_core.ws_cfg.setLogVars(ts2arr);
                 form.Close();
             });
-
-
-            //    string []ts2arr = boxDictionaries.Text.Split('\n');
-            //    ts2arr = ts2arr.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //    Array.Sort(ts2arr);
-            //    fhl_core.ws_cfg.setLogVars(ts2arr);
-            //    this.Close();
             form.ShowDialog();
-            ///this.button1.Click += new System.EventHandler(this.button1_Click);
         }
 
         private void pHPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            FormEditDictionaries form = new FormEditDictionaries();
+            form.Owner = this;
+            form.boxDictionaries.Text = String.Join("\n", fhl_dic_php_shell.list);
+            form.button1.Click += new System.EventHandler(delegate (object s, EventArgs ev)
+            {
+                string[] ts2arr = form.boxDictionaries.Text.Split('\n');
+                ts2arr = ts2arr.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                Array.Sort(ts2arr);
+                fhl_dic_php_shell.list = ts2arr;
+                form.Close();
+            });
+            form.ShowDialog();
         }
     }
 }

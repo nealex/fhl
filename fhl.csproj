@@ -69,10 +69,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="core\dictionaries\fhl_dic_admin_panels.cs" />
-    <Compile Include="core\dictionaries\fhl_dic_asp_backdors.cs" />
+    <Compile Include="core\dictionaries\fhl_dic_asp_shell.cs" />
     <Compile Include="core\dictionaries\fhl_dic_nginx.cs" />
     <Compile Include="core\dictionaries\fhl_dic_os_commanding.cs" />
-    <Compile Include="core\dictionaries\fhl_dic_php_backdors.cs" />
+    <Compile Include="core\dictionaries\fhl_dic_os_unix.cs" />
+    <Compile Include="core\dictionaries\fhl_dic_os_windows.cs" />
+    <Compile Include="core\dictionaries\fhl_dic_php_shell.cs" />
     <Compile Include="core\hunting\fhl_hunting.cs" />
     <Compile Include="core\dispatchers\fhl_load_data_from_files.cs" />
     <Compile Include="core\fhl_core.cs" />

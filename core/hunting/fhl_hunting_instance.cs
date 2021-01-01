@@ -16,7 +16,18 @@ namespace fhl.core.hunting
             final_attack = r;
             type = t;
             request = s;
+            signature = "";
         }
+        public fhl_hunting_instance(fhl_hunting_result_type r, fhl_hunting_type t, fhl_logfile_instance_node s, string sign)
+        {
+            final_attack = r;
+            type = t;
+            request = s;
+            signature = sign;
+        }
+
+        public string signature;
+
         /// <summary>
         /// Результат выполения атаки.
         /// </summary>

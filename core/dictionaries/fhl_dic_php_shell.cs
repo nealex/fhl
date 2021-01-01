@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace fhl.core.dictionaries
 {
-    class fhl_dic_php_backdors
+    class fhl_dic_php_shell
     {
-        /// <summary>
-        /// 
-        /// </summary>
         public static string[] list = {
             "0byt3m1n1.php",
             "c99.php",
@@ -28,6 +25,5 @@ namespace fhl.core.dictionaries
             "wordpress.php",
             "wso.php"
         };
-        //  
     }
 }

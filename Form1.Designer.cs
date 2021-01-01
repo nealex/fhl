@@ -53,9 +53,13 @@
             this.iISToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.кодыHTTPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.командыОСToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.unixToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.windowsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.базыДанныхToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mysqlToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.шэллскриптыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pHPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.настройкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.фильтрацияIPНаЭтапеОткрытияToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.форматЛогаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,11 +93,7 @@
             this.CoreLog = new System.Windows.Forms.RichTextBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog_mainForm = new System.Windows.Forms.OpenFileDialog();
-            this.backgroundWorker_loaddata = new System.ComponentModel.BackgroundWorker();
-            this.pHPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aSPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.unixToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.windowsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.backgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -234,7 +234,7 @@
             this.базыДанныхToolStripMenuItem,
             this.шэллскриптыToolStripMenuItem});
             this.словариToolStripMenuItem.Name = "словариToolStripMenuItem";
-            this.словариToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.словариToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.словариToolStripMenuItem.Text = "Словари";
             // 
             // точкиВходаToolStripMenuItem
@@ -287,6 +287,18 @@
             this.командыОСToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
             this.командыОСToolStripMenuItem.Text = "Команды ОС";
             // 
+            // unixToolStripMenuItem1
+            // 
+            this.unixToolStripMenuItem1.Name = "unixToolStripMenuItem1";
+            this.unixToolStripMenuItem1.Size = new System.Drawing.Size(123, 22);
+            this.unixToolStripMenuItem1.Text = "Unix";
+            // 
+            // windowsToolStripMenuItem1
+            // 
+            this.windowsToolStripMenuItem1.Name = "windowsToolStripMenuItem1";
+            this.windowsToolStripMenuItem1.Size = new System.Drawing.Size(123, 22);
+            this.windowsToolStripMenuItem1.Text = "Windows";
+            // 
             // базыДанныхToolStripMenuItem
             // 
             this.базыДанныхToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -310,12 +322,25 @@
             this.шэллскриптыToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
             this.шэллскриптыToolStripMenuItem.Text = "Шэлл-скрипты";
             // 
+            // pHPToolStripMenuItem
+            // 
+            this.pHPToolStripMenuItem.Name = "pHPToolStripMenuItem";
+            this.pHPToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
+            this.pHPToolStripMenuItem.Text = "PHP";
+            this.pHPToolStripMenuItem.Click += new System.EventHandler(this.pHPToolStripMenuItem_Click);
+            // 
+            // aSPToolStripMenuItem
+            // 
+            this.aSPToolStripMenuItem.Name = "aSPToolStripMenuItem";
+            this.aSPToolStripMenuItem.Size = new System.Drawing.Size(97, 22);
+            this.aSPToolStripMenuItem.Text = "ASP";
+            // 
             // настройкиToolStripMenuItem
             // 
             this.настройкиToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.фильтрацияIPНаЭтапеОткрытияToolStripMenuItem});
             this.настройкиToolStripMenuItem.Name = "настройкиToolStripMenuItem";
-            this.настройкиToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.настройкиToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.настройкиToolStripMenuItem.Text = "Настройки";
             // 
             // фильтрацияIPНаЭтапеОткрытияToolStripMenuItem
@@ -335,7 +360,7 @@
             this.шаблонСтрокиToolStripMenuItem,
             this.конецСтрокиToolStripMenuItem});
             this.форматЛогаToolStripMenuItem.Name = "форматЛогаToolStripMenuItem";
-            this.форматЛогаToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.форматЛогаToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.форматЛогаToolStripMenuItem.Text = "Формат лога";
             // 
             // шаблонСтрокиToolStripMenuItem
@@ -384,7 +409,7 @@
             this.белыеIPадресаToolStripMenuItem,
             this.запросыToolStripMenuItem});
             this.исключенияToolStripMenuItem.Name = "исключенияToolStripMenuItem";
-            this.исключенияToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.исключенияToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
             this.исключенияToolStripMenuItem.Text = "Исключения";
             // 
             // белыеIPадресаToolStripMenuItem
@@ -563,35 +588,10 @@
             // 
             this.openFileDialog.FileName = "openFileDialog";
             // 
-            // backgroundWorker_loaddata
+            // backgroundWorker
             // 
-            this.backgroundWorker_loaddata.WorkerReportsProgress = true;
-            this.backgroundWorker_loaddata.WorkerSupportsCancellation = true;
-            // 
-            // pHPToolStripMenuItem
-            // 
-            this.pHPToolStripMenuItem.Name = "pHPToolStripMenuItem";
-            this.pHPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.pHPToolStripMenuItem.Text = "PHP";
-            this.pHPToolStripMenuItem.Click += new System.EventHandler(this.pHPToolStripMenuItem_Click);
-            // 
-            // aSPToolStripMenuItem
-            // 
-            this.aSPToolStripMenuItem.Name = "aSPToolStripMenuItem";
-            this.aSPToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.aSPToolStripMenuItem.Text = "ASP";
-            // 
-            // unixToolStripMenuItem1
-            // 
-            this.unixToolStripMenuItem1.Name = "unixToolStripMenuItem1";
-            this.unixToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.unixToolStripMenuItem1.Text = "Unix";
-            // 
-            // windowsToolStripMenuItem1
-            // 
-            this.windowsToolStripMenuItem1.Name = "windowsToolStripMenuItem1";
-            this.windowsToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.windowsToolStripMenuItem1.Text = "Windows";
+            this.backgroundWorker.WorkerReportsProgress = true;
+            this.backgroundWorker.WorkerSupportsCancellation = true;
             // 
             // MainForm
             // 
@@ -640,7 +640,7 @@
         private System.Windows.Forms.ToolStripMenuItem режимОтладкиToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog_mainForm;
-        private System.ComponentModel.BackgroundWorker backgroundWorker_loaddata;
+        private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.ToolStripMenuItem шаблонСтрокиToolStripMenuItem;
