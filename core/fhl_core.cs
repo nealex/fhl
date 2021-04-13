@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.ComponentModel;
 namespace fhl.core
 {
     /// <summary>
@@ -21,6 +21,10 @@ namespace fhl.core
         public static bool MeOpenFiles = false;
         public static bool KernelPanic = false;
         public static int ThreadParse = 1;
+
+        public static BackgroundWorker openFilesWorker;
+        public static BackgroundWorker parseFilesWorker;
+
         /// <summary>
         /// Конфигурация под тот веб сервер который будет вестись анализ.
         /// </summary>

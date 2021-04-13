@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace fhl.core
 {
     /// <summary>
-    /// Класс описывающий объект в котором находитяться данные непосредтсвенно текущего файла лога
+    /// Класс описывающий объект в котором находитяться данные непосредтсвенно текущего лог файла
     /// </summary>
     class fhl_logfile_instance
     {
@@ -21,21 +21,27 @@ namespace fhl.core
         /// Исходный текст файла
         /// </summary>
         public string sourceText;
+
+        /// <summary>
+        /// Лист строк из запроса.
+        /// </summary>
+        public List<string> sourceRows;
+
         /// <summary>
         /// Лист с разобраными на объекты строками закпросов к веб серверу.
         /// </summary>
         public List<fhl_logfile_instance_node> rows = new List<fhl_logfile_instance_node>();
 
-        public fhl_logfile_instance(string f, string s)
+        public fhl_logfile_instance(string f, List<string> r)
         {
             filename = f;
-            sourceText = s;
-            //MessageBox.Show(s);
-            string[] tempRows = s.Split(new string[] { fhl_core.EndLineString }, StringSplitOptions.RemoveEmptyEntries);
-            //MessageBox.Show(tempRows[1]);
-            int iterActiveRequest = 0;
-            foreach (string ss in tempRows)
-            {
+            sourceRows = r;
+            
+            //string[] tempRows = s.Split(new string[] { fhl_core.EndLineString }, StringSplitOptions.RemoveEmptyEntries);
+            
+          //  int iterActiveRequest = 0;
+       //     foreach (string ss in tempRows)
+         //   {
                 ///
                 /// Закоментировано по причине возможных оибочных срабатываний.
                 /// Так как проверяется вся строка запроса и в ней может находиться важная информация.
@@ -58,10 +64,10 @@ namespace fhl.core
                 //}
                 //else
                 //{
-                    rows.Add(new fhl_logfile_instance_node(ss));
+                   // rows.Add(new fhl_logfile_instance_node(ss));
                 //}
-            }
-            fhl_core.AllCountRequest += rows.Count;
+          //  }
+           // fhl_core.AllCountRequest += rows.Count;
         }
 
     }

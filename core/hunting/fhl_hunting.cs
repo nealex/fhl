@@ -32,7 +32,7 @@ namespace fhl.core.hunting
                     // Если IP входит в белый список исключений, то пропускаем итерацию.
                     if (fhl_core.WhiteIPList.Any(s => s.Contains(REMOTE_ADDR)))
                     {
-                        MessageBox.Show("Пропущен запрос с ip адреса: " + REMOTE_ADDR);
+                       // MessageBox.Show("Пропущен запрос с ip адреса: " + REMOTE_ADDR);
                         continue;
                     }
 
@@ -44,15 +44,17 @@ namespace fhl.core.hunting
                     {
                         if (REQUEST.value.IndexOf(cp) != -1)
                         {
+                          //  MessageBox.Show(REQUEST.value);
                             switch (HTTP_CODE)
                             {
                                 case 500:
                                 case 200:
-                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.PredictableResourceLocation, tempRequest)); break;
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.PredictableResourceLocation, tempRequest, "Предсказуемое расположение ресурсов")); break;
                                 case 301:
                                 case 302:
+                                case 400:    
                                 case 404:
-                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.PredictableResourceLocation, tempRequest)); break;
+                                    fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.PredictableResourceLocation, tempRequest, "Предсказуемое расположение ресурсов")); break;
                             };
                         }
                     }
@@ -69,6 +71,7 @@ namespace fhl.core.hunting
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.BackdoorExecute, tempRequest, ab)); break;
                                 case 301:
                                 case 302:
+                                case 400:
                                 case 404:
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.BackdoorExecute, tempRequest, ab)); break;
                             };
@@ -87,6 +90,7 @@ namespace fhl.core.hunting
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.BackdoorExecute, tempRequest, ab)); break;
                                 case 301:
                                 case 302:
+                                case 400:
                                 case 404:
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.BackdoorExecute, tempRequest, ab)); break;
                             };
@@ -106,6 +110,7 @@ namespace fhl.core.hunting
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
                                 case 301:
                                 case 302:
+                                case 400:
                                 case 404:
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
                             };
@@ -125,6 +130,7 @@ namespace fhl.core.hunting
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
                                 case 301:
                                 case 302:
+                                case 400:
                                 case 404:
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
                             };
@@ -142,6 +148,7 @@ namespace fhl.core.hunting
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
                                 case 301:
                                 case 302:
+                                case 400:
                                 case 404:
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.OSCommanding, tempRequest, ab)); break;
                             };

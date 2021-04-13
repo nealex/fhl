@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,11 @@ namespace fhl
 {
     public partial class MainForm : Form
     {
-
+        /// <summary>
+        /// Метод вывода в основную консоль текстовой информации.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="c"></param>
         void addDataToCoreLog(string str, Color c)
         {
             CoreLog.AppendText(str);
@@ -25,6 +30,10 @@ namespace fhl
             CoreLog.AppendText("\n");
         }
 
+        /// <summary>
+        /// Самая первая первью с тем самым чайником:)
+        /// </summary>
+        /// <param name="ct"></param>
         void previewTeapot(Color ct)
         {
             addDataToCoreLog("                      ", ct);
@@ -36,6 +45,24 @@ namespace fhl
             addDataToCoreLog("", ct);
         }
 
+        void previewBug(Color ct)
+        {
+            addDataToCoreLog("                       m", ct);
+            addDataToCoreLog("   $m                mm            m", ct);
+            addDataToCoreLog("    \"$mmmmm        m$\"    mmmmmmm$\"", ct);
+            addDataToCoreLog("          \"\"\"$m   m$    m$\"\"\"\"\"\"", ct);
+            addDataToCoreLog("        mmmmmmm$$$$$$$$$\"mmmm", ct);
+            addDataToCoreLog("  mmm$$$$$$$$$$$$$$$$$$ m$$$$m  \"    m  \"", ct);
+            addDataToCoreLog("$$$$$$$$$$$$$$$$$$$$$$  $$$$$$\"$$$", ct);
+            addDataToCoreLog(" mmmmmmmmmmmmmmmmmmmmm  $$$$$$$$$$", ct);
+            addDataToCoreLog(" $$$$$$$$$$$$$$$$$$$$$  $$$$$$$\"\"\"  m", ct);
+            addDataToCoreLog(" \"$$$$$$$$$$$$$$$$$$$$$ $$$$$$  \"      \"", ct);
+            addDataToCoreLog("     \"\"\"\"\"\"\"$$$$$$$$$$$m \"\"\"\"", ct);
+            addDataToCoreLog("       mmmmmmmm\"  m$   \"$mmmmm", ct);
+            addDataToCoreLog("     $$\"\"\"\"\"\"      \"$     \"\"\"\"\"\"$$", ct);
+            addDataToCoreLog("   m$\"               \"m           \"", ct);
+            addDataToCoreLog("                       \"", ct);
+        }
         public void valid_format()
         {
             addDataToCoreLog("____________________________________________________________________", Color.Green);
@@ -56,21 +83,35 @@ namespace fhl
             if (fhl_core.AllCountRequest > 10)
             {
                 DialogResult dialogResult = MessageBox.Show("Строк очень много (более 10) выдейтсвительно хотите их все вывести в консоль?!", "Предупреждение", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
+                if (dialogResult == DialogResult.No)
                 {
-                    foreach (fhl_logfile_instance f in fhl_core.Files)
+                    return;
+                    //foreach (fhl_logfile_instance f in fhl_core.Files)
+                    //{
+                    //    for (int i = 0, j = 0; i < f.rows.Count; i++)
+                    //    {
+                    //        addDataToCoreLog(f.rows[i].request, Color.Blue);
+                    //        addDataToCoreLog(string.Format("Всего параметров: {0}", f.rows[i].params_list.Count), Color.Blue);
+                    //        foreach (fhl_websrv_var cp in f.rows[i].params_list)
+                    //        {
+                    //            addDataToCoreLog(string.Format("[{0}]\t{1}\t\t\t\t\t \"{2}\"", j++, cp.var, cp.value), Color.Blue);
+                    //        }
+                    //        addDataToCoreLog("", Color.Transparent);
+                    //    }
+                    //}
+                }
+            }
+            foreach (fhl_logfile_instance f in fhl_core.Files)
+            {
+                for (int i = 0, j = 0; i < f.rows.Count; i++)
+                {
+                    addDataToCoreLog(f.rows[i].request, Color.Blue);
+                    addDataToCoreLog(string.Format("Всего параметров: {0}", f.rows[i].params_list.Count), Color.Blue);
+                    foreach (fhl_websrv_var cp in f.rows[i].params_list)
                     {
-                        for (int i = 0, j = 0; i < f.rows.Count; i++)
-                        {
-                            addDataToCoreLog(f.rows[i].request, Color.Blue);
-                            addDataToCoreLog(string.Format("Всего параметров: {0}", f.rows[i].params_list.Count), Color.Blue);
-                            foreach (fhl_websrv_var cp in f.rows[i].params_list)
-                            {
-                                addDataToCoreLog(string.Format("[{0}]\t{1}\t\t\t\t\t \"{2}\"", j++, cp.var, cp.value), Color.Blue);
-                            }
-                            addDataToCoreLog("", Color.Transparent);
-                        }
+                        addDataToCoreLog(string.Format("[{0}]\t{1}\t\t\t\t\t \"{2}\"", j++, cp.var, cp.value), Color.Blue);
                     }
+                    addDataToCoreLog("", Color.Transparent);
                 }
             }
         }
@@ -80,17 +121,14 @@ namespace fhl
             InitializeComponent();
             addDataToCoreLog("Запуск программы!!!", Color.Black);
             addDataToCoreLog("___________________________________________________________________", Color.Black);
-            previewTeapot(Color.Silver);
+            //previewTeapot(Color.Silver);
+            previewBug(Color.Black);
             addDataToCoreLog("Завариваем чаек, и начинаем смотреть на скучные и длинные логи :)", Color.Black);
             addDataToCoreLog("___________________________________________________________________", Color.Black);
+            operationName.Text = "";
         }
 
 
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
 
         private void открытьToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -101,8 +139,7 @@ namespace fhl
             {
                 return;
             }
-            toolStripProgressBar1.Minimum = 0;
-            toolStripProgressBar1.Maximum = openFileDialog_mainForm.FileNames.Length + 1;
+
 
             fhl_core.FileNames = openFileDialog_mainForm.FileNames;
             fhl_core.getLogFormatPatternRegex(fhl_core.ws_cfg.log_format, fhl_core.ws_cfg.log_vars);
@@ -123,110 +160,257 @@ namespace fhl
                         addDataToCoreLog(String.Format("Запросы с ip адреса {0} будут пропущены!", wip), Color.Black);
                     }
                 }
-                fhl_core.AllCountRequest = 0;
-                backgroundWorker.DoWork += fhl_load_data_from_files.DoWork;
-                backgroundWorker.ProgressChanged += loadData_ProgressChanged;
-                backgroundWorker.RunWorkerCompleted += loadData_RunWorkerCompleted;
-                backgroundWorker.RunWorkerAsync();
 
-                toolStripProgressBar1.Value = 0;
-                toolStripProgressBar1.Visible = true;
-                toolStripStatusLabel2.Visible = true;
+                // Подсчет количества строк в выбранных лог файлах.
+                ///
+                /// TODO На перспективу нужен механизм который обеспечит формирование множетеля для визуального прогрессбара, 
+                /// так как строк может быть очень много, а у п. бара тип int.
+                ///
+                int AllCountLinesFromAllFiles = 0;
+                foreach (string fileName in openFileDialog_mainForm.FileNames)
+                {
+                    using (var streamReader = new StreamReader(new BufferedStream(File.OpenRead(fileName), 10 * 1024 * 1024))) // буфер в 10 мегабайт
+                    {
+                        while (!streamReader.EndOfStream)
+                        {
+                            if (streamReader.Read() == '\n')
+                            {
+                                AllCountLinesFromAllFiles++;
+                            };
+                        }
+                    }
+                }
 
+                toolStripProgressBar1.Minimum = 0;
+                toolStripProgressBar1.Maximum = AllCountLinesFromAllFiles;  // Общее количестов строк в лог файлах.
+
+                fhl_core.AllCountRequest = AllCountLinesFromAllFiles;
+                using(fhl_core.openFilesWorker =new BackgroundWorker()){
+                    fhl_core.openFilesWorker.WorkerReportsProgress = true;
+                    fhl_core.openFilesWorker.WorkerSupportsCancellation = true;
+                    fhl_core.parseFilesWorker = null;
+                    fhl_core.openFilesWorker.DoWork += fhl_load_data_from_files.OpenFiles_RunWorker;
+                    fhl_core.openFilesWorker.ProgressChanged += OpenFiles_WorkerProgressChanged;
+                    fhl_core.openFilesWorker.RunWorkerCompleted += OpenFiles_workerCompleted;
+                    fhl_core.openFilesWorker.RunWorkerAsync();
+
+                    toolStripProgressBar1.Value = 0;
+                    toolStripProgressBar1.Visible = true;
+                    toolStripStatusLabel2.Visible = true;
+                    operationName.Text = "Чтение файлов";
+
+
+                }
+                //backgroundWorker.Dispose();
+              
             }
         }
 
-
-        public void loadData_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        /// <summary>
+        /// Метод визульно меняющий прогресс выполнения операции в ассинхронном потоке.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OpenFiles_WorkerProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (fhl_core.KernelPanic)
             {
                 return;
             }
             toolStripProgressBar1.Value = e.ProgressPercentage;
+            if (fhl_dispatcher.messages.Count != 0)
+            {
+                for (int mi = 0; mi < fhl_dispatcher.messages.Count; mi++)
+                {
+                    addDataToCoreLog(fhl_dispatcher.messages[mi], Color.Black);
+                    fhl_dispatcher.messages.RemoveAt(mi); //fhl_dispatcher.messages[mi].
+                }
+                //foreach (string m in fhl_dispatcher.messages)
+                //    addDataToCoreLog(m, Color.Black);
+            }
+            //    fhl_dispatcher.messages.Clear();
         }
 
-        private void loadData_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        public void Parseiles_WorkerProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (fhl_core.KernelPanic)
+            {
+                return;
+            }
+            toolStripProgressBar1.Value = e.ProgressPercentage;
+            if (fhl_dispatcher.messages.Count != 0)
+            {
+                for (int mi = 0; mi < fhl_dispatcher.messages.Count; mi++)
+                {
+                    addDataToCoreLog(fhl_dispatcher.messages[mi], Color.Black);
+                    fhl_dispatcher.messages.RemoveAt(mi); //fhl_dispatcher.messages[mi].
+                }
+            }
+        }
+
+        private void OpenFiles_workerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled == true)
             {
                 addDataToCoreLog("", Color.Red);
                 addDataToCoreLog("Операция загрузки файлов отменена пользователем!", Color.Red);
-
+                operationName.Text = "";
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
-
+                return;
             }
             else if (e.Error != null)
             {
                 addDataToCoreLog("", Color.Red);
                 addDataToCoreLog(string.Format("При загрузке возникла следующая ошибка: {0}", e.Error.Message), Color.Red);
-
+                operationName.Text = "";
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
+                return;
             }
             else
             {
-                // MessageBox.Show("Start !!!" + fhl_core.AllCountRequest.ToString());
+
                 foreach (fhl_logfile_instance f in fhl_core.Files)
                 {
                     addDataToCoreLog("", Color.Red);
-                    addDataToCoreLog(string.Format("Добавлен файл {0} для анализа на предмет аномалий и угроз", f.filename), Color.Red);
-                    addDataToCoreLog(string.Format("Количество строк: {0}", f.rows.Count()), Color.Red);
+                    addDataToCoreLog(string.Format("Файл {0} прочитан", f.filename), Color.Red);
+                    addDataToCoreLog(string.Format("Найдено {0} строк", fhl_core.AllCountRequest), Color.Red);
                     addDataToCoreLog("", Color.Red);
+                    /// 
+                    /// TODO Необходимо добавить отображение затраченного времени!!!
+                    /// 
                 }
-                // MessageBox.Show("break!!!" + fhl_core.AllCountRequest.ToString());
-                fhl_core.MeOpenFiles = false;
-                using (BackgroundWorker bw = new BackgroundWorker())
-                {
-                    if (backgroundWorker.IsBusy != true)
-                    {
-                        addDataToCoreLog("Начат процесс разбора строк в соответсвии с шаблном:", Color.Black);
-                        addDataToCoreLog(String.Format("При разборе будет использовано {0} потоков из {1}", fhl_core.ThreadParse, Environment.ProcessorCount), Color.Black);
-                        addDataToCoreLog(fhl_core.ws_cfg.log_format, Color.Black);
 
-                        toolStripProgressBar1.Maximum = fhl_core.AllCountRequest;
+                fhl_core.MeOpenFiles = false;
+                toolStripProgressBar1.Value = 0;
+                toolStripProgressBar1.Visible = false;
+                toolStripStatusLabel2.Visible = false;
+                operationName.Text = "";
+
+
+                if (fhl_core.openFilesWorker.IsBusy != true && fhl_core.parseFilesWorker==null)
+                {
+                    //backgroundWorker.CancelAsync();
+                    toolStripProgressBar1.Minimum = 0;
+                    toolStripProgressBar1.Maximum = fhl_core.AllCountRequest;   // Общее количестов строк в лог файлах.
+
+                    using (fhl_core.parseFilesWorker = new BackgroundWorker())
+                    {
+                        fhl_core.parseFilesWorker.WorkerReportsProgress = true;
+                        fhl_core.parseFilesWorker.WorkerSupportsCancellation = true;
+                        fhl_core.parseFilesWorker.DoWork += fhl_load_data_from_files.ParseFiles_RunWorker;
+                        fhl_core.parseFilesWorker.ProgressChanged += Parseiles_WorkerProgressChanged;
+                        fhl_core.parseFilesWorker.RunWorkerCompleted += ParseFiles_workerCompleted;
+                        fhl_core.parseFilesWorker.RunWorkerAsync();
+
                         toolStripProgressBar1.Value = 0;
-                        bw.WorkerReportsProgress = true;
-                        bw.WorkerSupportsCancellation = true;
-                        bw.DoWork += fhl_load_data_from_files.doParse;
-                        bw.ProgressChanged += loadData_ProgressChanged;
-                        bw.RunWorkerCompleted += loadData_RunWorkerParseDataCompleted;
-                        bw.RunWorkerAsync();
+                        toolStripProgressBar1.Visible = true;
+                        toolStripStatusLabel2.Visible = true;
+                        operationName.Text = "Разбор запросов";
                     }
+
                 }
+
+                /*using (BackgroundWorker bw = new BackgroundWorker())
+                //{
+                //    if (backgroundWorker.IsBusy != true)
+                //    {
+                //        addDataToCoreLog("Начат процесс разбора строк в соответсвии с шаблном:", Color.Black);
+                //        addDataToCoreLog(String.Format("При разборе будет использовано {0} потоков из {1}", fhl_core.ThreadParse, Environment.ProcessorCount), Color.Black);
+                //        addDataToCoreLog(fhl_core.ws_cfg.log_format, Color.Black);
+
+                //        toolStripProgressBar1.Maximum = fhl_core.AllCountRequest;
+                //        toolStripProgressBar1.Value = 0;
+                //        bw.WorkerReportsProgress = true;
+                //        bw.WorkerSupportsCancellation = true;
+                //        bw.DoWork += fhl_load_data_from_files.doParse;
+                //        bw.ProgressChanged += loadData_ProgressChanged;
+                //        bw.RunWorkerCompleted += loadData_RunWorkerParseDataCompleted;
+                //        bw.RunWorkerAsync();
+                //    }
+                }*/
 
 
             }
         }
 
-        private void loadData_RunWorkerParseDataCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void ParseFiles_workerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled == true)
             {
                 addDataToCoreLog("", Color.Red);
-                addDataToCoreLog("Операция загрузки файлов отменена пользователем!", Color.Red);
+                addDataToCoreLog("Операция разбора файлов отменена пользователем!", Color.Red);
+                operationName.Text = "";
+                toolStripProgressBar1.Value = 0;
+                toolStripProgressBar1.Visible = false;
+                toolStripStatusLabel2.Visible = false;
+                return;
 
+            }
+            else if (e.Error != null)
+            {
+                addDataToCoreLog("", Color.Red);
+                addDataToCoreLog(string.Format("При разборе возникла следующая ошибка: {0}", e.Error.Message), Color.Red);
+                operationName.Text = "";
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
             }
             else
             {
-                addDataToCoreLog("Все файлы логов загружены", Color.Blue);
+
                 foreach (fhl_logfile_instance f in fhl_core.Files)
                 {
-                    addDataToCoreLog(string.Format("В файле {0} найдено {1} строк запрос к веб серверу", f.filename, f.rows.Count), Color.Blue);
+                    addDataToCoreLog("", Color.Red);
+                    addDataToCoreLog(string.Format("Файл {0} разобран и готов для анализа на предмет аномалий и угроз", f.filename), Color.Red);
+                    addDataToCoreLog(string.Format("Обработано запросов: {0}", f.rows.Count()), Color.Red);
+                    addDataToCoreLog("", Color.Red);
+                    /// 
+                    /// TODO Необходимо добавить отображение затраченного времени!!!
+                    /// 
                 }
+
+                fhl_core.MeOpenFiles = false;
+                toolStripProgressBar1.Value = 0;
+                toolStripProgressBar1.Visible = false;
+                toolStripStatusLabel2.Visible = false;
+                operationName.Text = "";
+
             }
-
-            toolStripProgressBar1.Value = 0;
-            toolStripProgressBar1.Visible = false;
-            toolStripStatusLabel2.Visible = false;
-
+            MessageBox.Show("ВТорой воркер остановлен");
         }
+
+
+
+
+        //private void loadData_RunWorkerParseDataCompleted(object sender, RunWorkerCompletedEventArgs e)
+        //{
+        //    if (e.Cancelled == true)
+        //    {
+        //        addDataToCoreLog("", Color.Red);
+        //        addDataToCoreLog("Операция загрузки файлов отменена пользователем!", Color.Red);
+
+        //        toolStripProgressBar1.Value = 0;
+        //        toolStripProgressBar1.Visible = false;
+        //        toolStripStatusLabel2.Visible = false;
+        //    }
+        //    else
+        //    {
+        //        addDataToCoreLog("Все файлы логов загружены", Color.Blue);
+        //        foreach (fhl_logfile_instance f in fhl_core.Files)
+        //        {
+        //            addDataToCoreLog(string.Format("В файле {0} найдено {1} строк запрос к веб серверу", f.filename, f.rows.Count), Color.Blue);
+        //        }
+        //    }
+
+        //    toolStripProgressBar1.Value = 0;
+        //    toolStripProgressBar1.Visible = false;
+        //    toolStripStatusLabel2.Visible = false;
+
+        //}
 
 
         private void шаблонСтрокиToolStripMenuItem_Click(object sender, EventArgs e)
@@ -255,10 +439,18 @@ namespace fhl
 
         private void toolStripStatusLabel2_Click(object sender, EventArgs e)
         {
-            if (backgroundWorker.WorkerSupportsCancellation == true)
+            if (fhl_core.openFilesWorker.IsBusy || fhl_core.parseFilesWorker.IsBusy)
             {
                 // Cancel the asynchronous operation.
-                backgroundWorker.CancelAsync();
+                fhl_core.openFilesWorker.CancelAsync();
+                fhl_core.parseFilesWorker.CancelAsync();
+                fhl_core.parseFilesWorker.Dispose();
+                fhl_core.openFilesWorker = null;
+                fhl_core.openFilesWorker.Dispose();
+                fhl_core.parseFilesWorker = null;
+
+
+                
             }
         }
 
@@ -274,7 +466,7 @@ namespace fhl
                 bw.WorkerReportsProgress = true;
                 bw.WorkerSupportsCancellation = true;
                 bw.DoWork += fhl_hunting.doHuntind;
-                bw.ProgressChanged += loadData_ProgressChanged;
+                bw.ProgressChanged += OpenFiles_WorkerProgressChanged;
                 bw.RunWorkerCompleted += HuntingWorker_compled;
                 bw.RunWorkerAsync();
             }
@@ -300,34 +492,34 @@ namespace fhl
                     List<fhl_hunting_instance> successAttack = fhl_hunting.results.Where(item => item.final_attack == fhl_hunting_result_type.Success).ToList();
                     if (successAttack.Count > 0)
                     {
-                        addDataToCoreLog(String.Format("Хакерам удалось произвести {0} успешных атак!!!", successAttack.Count), Color.Red);
+                        addDataToCoreLog(String.Format("Удалось обнаружить потенциально {0} успешных запросов!!!", successAttack.Count), Color.Red);
                         foreach (fhl_hunting_instance ia in successAttack)
                         {
-                            addDataToCoreLog(String.Format("\nВид атаки: {0} ({1})\nСтрока в лог файле:\n{2}\n", ia.type.ToString(),ia.signature, ia.request.request), Color.Red);
+                            addDataToCoreLog(String.Format("\nВид атаки: {0} ({1})\nСтрока в лог файле:\n{2}\n", ia.type.ToString(), ia.signature, ia.request.request), Color.Red);
                         }
                     }
                     else
                     {
-                        addDataToCoreLog("Успешных атак охотник не обнаружил!!!", Color.Red);
+                        addDataToCoreLog("Потенциально успешных атак (запросов) не обнаружено!!!", Color.Red);
                     }
 
                     List<fhl_hunting_instance> FailedAttack = fhl_hunting.results.Where(item => item.final_attack == fhl_hunting_result_type.Failed).ToList();
                     if (FailedAttack.Count > 0)
                     {
-                        addDataToCoreLog(String.Format("Хакерам удалось произвести {0} подозрительных запросов!!!", FailedAttack.Count), Color.Green);
+                        addDataToCoreLog(String.Format("Удалось обнаружить {0} подозрительных запросов!!!", FailedAttack.Count), Color.Green);
                         foreach (fhl_hunting_instance ia in FailedAttack)
                         {
-                            addDataToCoreLog(String.Format("\nВид атаки: {0} ({1})\nСтрока в лог файле:\n{2}\n", ia.type.ToString(),ia.signature, ia.request.request), Color.Green);
+                            addDataToCoreLog(String.Format("\nВид атаки: {0} ({1})\nСтрока в лог файле:\n{2}\n", ia.type.ToString(), ia.signature, ia.request.request), Color.Green);
                         }
                     }
                     else
                     {
-                        addDataToCoreLog("Безуспешных вредоносных запросов к серверу не найдено!!!", Color.Green);
+                        addDataToCoreLog("Подрзрительных запросов к серверу не обнаружено!!!", Color.Green);
                     }
                 }
                 else
                 {
-                    addDataToCoreLog("Хакерской активности не обнаружено!!!", Color.Blue);
+                    addDataToCoreLog("Хакерской активности не выявлено (с текущмим настройками сканиронивания)!!!", Color.Blue);
                 }
             }
 
@@ -340,7 +532,7 @@ namespace fhl
         private void тестовыйВыводСтрокToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
-
+            MessageBox.Show("111");
         }
 
         private void горизонтальнаяToolStripMenuItem_Click(object sender, EventArgs e)
@@ -449,6 +641,37 @@ namespace fhl
                 form.Close();
             });
             form.ShowDialog();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.WS_log_format))
+            {
+                fhl_core.ws_cfg.log_format = Properties.Settings.Default.WS_log_format;
+            }
+            if (Properties.Settings.Default.CORE_debug)
+            {
+                debugToolStripMenuItem.CheckState = CheckState.Checked;
+                fhl_core.Debug = true;
+            }
+        }
+
+        private void debugToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (debugToolStripMenuItem.CheckState == CheckState.Checked)
+            {
+                debugToolStripMenuItem.CheckState = CheckState.Checked;
+                fhl_core.Debug = true;
+                Properties.Settings.Default.CORE_debug = true;
+
+            }
+            else
+            {
+                debugToolStripMenuItem.CheckState = CheckState.Unchecked;
+                fhl_core.Debug = false;
+                Properties.Settings.Default.CORE_debug = false;
+            }
+            Properties.Settings.Default.Save();
         }
     }
 }

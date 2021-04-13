@@ -17,7 +17,10 @@ namespace fhl.core.dictionaries
             "/admin-panel",
             "/account",
             "/boaform",
+            "/pma",
             //------------
+            "/adm.php",
+            "/admi.php",
             "/admin.php",
             "/wp-login.php",
             "/manager.php",
@@ -25,6 +28,8 @@ namespace fhl.core.dictionaries
             "/console.php",
             "/adminpanel.php",
             "/account.php",
+            "/pma.php",
+            
         };
     }
 }

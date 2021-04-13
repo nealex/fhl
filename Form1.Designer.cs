@@ -34,6 +34,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.operationName = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -90,6 +91,7 @@
             this.полныйЛогОперацийToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.валидацияФорматаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.тестовыйВыводСтрокToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CoreLog = new System.Windows.Forms.RichTextBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.openFileDialog_mainForm = new System.Windows.Forms.OpenFileDialog();
@@ -103,6 +105,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel3,
+            this.operationName,
             this.toolStripProgressBar1,
             this.toolStripStatusLabel2});
             this.statusStrip1.Location = new System.Drawing.Point(0, 539);
@@ -123,8 +126,14 @@
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(591, 17);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(473, 17);
             this.toolStripStatusLabel3.Spring = true;
+            // 
+            // operationName
+            // 
+            this.operationName.Name = "operationName";
+            this.operationName.Size = new System.Drawing.Size(118, 17);
+            this.operationName.Text = "toolStripStatusLabel5";
             // 
             // toolStripProgressBar1
             // 
@@ -135,10 +144,10 @@
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.toolStripStatusLabel2.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.toolStripStatusLabel2.ForeColor = System.Drawing.Color.Red;
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(50, 17);
-            this.toolStripStatusLabel2.Text = "Отмена";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(14, 17);
+            this.toolStripStatusLabel2.Text = "x";
             this.toolStripStatusLabel2.Visible = false;
             this.toolStripStatusLabel2.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
             // 
@@ -542,7 +551,8 @@
             this.dEBUGToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.полныйЛогОперацийToolStripMenuItem,
             this.валидацияФорматаToolStripMenuItem,
-            this.тестовыйВыводСтрокToolStripMenuItem2});
+            this.тестовыйВыводСтрокToolStripMenuItem2,
+            this.debugToolStripMenuItem});
             this.dEBUGToolStripMenuItem1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.dEBUGToolStripMenuItem1.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.dEBUGToolStripMenuItem1.Name = "dEBUGToolStripMenuItem1";
@@ -571,6 +581,15 @@
             this.тестовыйВыводСтрокToolStripMenuItem2.Size = new System.Drawing.Size(199, 22);
             this.тестовыйВыводСтрокToolStripMenuItem2.Text = "Тестовый вывод строк";
             this.тестовыйВыводСтрокToolStripMenuItem2.Click += new System.EventHandler(this.тестовыйВыводСтрокToolStripMenuItem2_Click);
+            // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.CheckOnClick = true;
+            this.debugToolStripMenuItem.ForeColor = System.Drawing.Color.Orange;
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.debugToolStripMenuItem.Text = "Debug";
+            this.debugToolStripMenuItem.Click += new System.EventHandler(this.debugToolStripMenuItem_Click);
             // 
             // CoreLog
             // 
@@ -607,7 +626,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Fox Hunter Log";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
@@ -640,7 +659,6 @@
         private System.Windows.Forms.ToolStripMenuItem режимОтладкиToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.OpenFileDialog openFileDialog_mainForm;
-        private System.ComponentModel.BackgroundWorker backgroundWorker;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.ToolStripMenuItem шаблонСтрокиToolStripMenuItem;
@@ -682,6 +700,10 @@
         private System.Windows.Forms.ToolStripMenuItem windowsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem pHPToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aSPToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel operationName;
+        public System.ComponentModel.BackgroundWorker backgroundWorker;
+        public System.ComponentModel.BackgroundWorker bwPrse;
     }
 }
 
