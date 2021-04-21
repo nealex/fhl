@@ -29,12 +29,14 @@ namespace fhl.core.hunting
 
                     fhl_logfile_instance_node tempRequest = fhl_core.Files[iterFile].rows[iterRequest];
                     var REMOTE_ADDR = tempRequest.params_list.Find(item => item.var == "$remote_addr").value;
+
                     // Если IP входит в белый список исключений, то пропускаем итерацию.
-                    if (fhl_core.WhiteIPList.Any(s => s.Contains(REMOTE_ADDR)))
-                    {
-                       // MessageBox.Show("Пропущен запрос с ip адреса: " + REMOTE_ADDR);
-                        continue;
-                    }
+                    if (fhl_core.FilteringOnHunting)
+                        if (fhl_core.WhiteIPList.Any(s => s.Contains(REMOTE_ADDR)))
+                        {
+                            // MessageBox.Show("Пропущен запрос с ip адреса: " + REMOTE_ADDR);
+                            continue;
+                        }
 
                     int HTTP_CODE = Int32.Parse(tempRequest.params_list.Find(item => item.var == "$status").value);
                     var REQUEST = tempRequest.params_list.Find(item => item.var == "$request");
@@ -44,7 +46,7 @@ namespace fhl.core.hunting
                     {
                         if (REQUEST.value.IndexOf(cp) != -1)
                         {
-                          //  MessageBox.Show(REQUEST.value);
+                            //  MessageBox.Show(REQUEST.value);
                             switch (HTTP_CODE)
                             {
                                 case 500:
@@ -52,7 +54,7 @@ namespace fhl.core.hunting
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Success, fhl_hunting_type.PredictableResourceLocation, tempRequest, "Предсказуемое расположение ресурсов")); break;
                                 case 301:
                                 case 302:
-                                case 400:    
+                                case 400:
                                 case 404:
                                     fhl_hunting.results.Add(new fhl_hunting_instance(fhl_hunting_result_type.Failed, fhl_hunting_type.PredictableResourceLocation, tempRequest, "Предсказуемое расположение ресурсов")); break;
                             };

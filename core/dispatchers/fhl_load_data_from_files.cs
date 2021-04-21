@@ -37,7 +37,7 @@ namespace fhl.core.dispatchers
                 }
                 else
                 {
-                    using (var streamReader = new StreamReader(new BufferedStream(File.OpenRead(file), 10 * 1024 * 1024))) // буфер в 1 мегабайт (Эксперементально)
+                    using (var streamReader = new StreamReader(new BufferedStream(File.OpenRead(file), 10 * 1024 * 1024))) // буфер в 10 мегабайт (Эксперементально)
                     {
                         string temp_string = "";    // Строка лога из файла.
                         while (!streamReader.EndOfStream)
@@ -53,23 +53,8 @@ namespace fhl.core.dispatchers
                                 }
                                 if (!worker.CancellationPending)
                                 {
-                                    // Текущая строка, разобранная на параметр:значение
-                                    //fhl_logfile_instance_node temp_inst_node = new fhl_logfile_instance_node(temp_string);
-
-                                    //Regex rg = new Regex(fhl_core.ws_cfg.log_format_regxPattern);   // Создаем экземпляр Regex  
-                                    //MatchCollection matchedAuthors = rg.Matches(temp_string);  // Получаем все совпадения  
-
-                                    //for (int count = 0; count < matchedAuthors.Count; count++)
-                                    //{
-                                    //    for (int j = 1, param_iter = 0; j < matchedAuthors[count].Groups.Count; j++, param_iter++)
-                                    //    {
-                                    //        temp_inst_node.params_list
-                                    //            .Add(new fhl_websrv_var(fhl_core.ws_cfg.existVariable[param_iter].var, matchedAuthors[count].Groups[j].Value));
-                                    //    }
-                                    //}
                                     worker.ReportProgress(i++);
                                     tempFileRows.Add(temp_string);
-
                                 }
                                 else
                                 {
@@ -130,6 +115,7 @@ namespace fhl.core.dispatchers
                                     }
                                 }
 
+                                // Фильтрация запросов по IP на этапе забора строк.
                                 bool continue_request = false;
                                 if (fhl_core.FilteringOnOpeningFiles)
                                 {
@@ -145,6 +131,7 @@ namespace fhl.core.dispatchers
                                 {
                                     continue;
                                 }
+
                                 fhl_logfile_instance_node t1 = new fhl_logfile_instance_node(f.sourceRows[iter0]);
                                 t1.params_list = req;
                                 f.rows.Add(t1);

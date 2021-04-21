@@ -24,6 +24,7 @@ namespace fhl.core
 
         public static BackgroundWorker openFilesWorker;
         public static BackgroundWorker parseFilesWorker;
+        public static BackgroundWorker huntingWorker;
 
         /// <summary>
         /// Конфигурация под тот веб сервер который будет вестись анализ.
@@ -51,7 +52,12 @@ namespace fhl.core
         /// <summary>
         /// Флаг: нужно ли фильтровать запросы по белому списку ip на этапе открытия файлов.
         /// </summary>
-        public static bool FilteringOnOpeningFiles = true;      
+        public static bool FilteringOnOpeningFiles = true;
+
+        /// <summary>
+        /// Флаг: Фильтрация запросов по IP на этапе анализа
+        /// </summary>
+        public static bool FilteringOnHunting = false;
 
         public static List<string> WhiteIPList = new List<string>() {"localhost","127.0.0.1"};
 

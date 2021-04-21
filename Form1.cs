@@ -86,19 +86,6 @@ namespace fhl
                 if (dialogResult == DialogResult.No)
                 {
                     return;
-                    //foreach (fhl_logfile_instance f in fhl_core.Files)
-                    //{
-                    //    for (int i = 0, j = 0; i < f.rows.Count; i++)
-                    //    {
-                    //        addDataToCoreLog(f.rows[i].request, Color.Blue);
-                    //        addDataToCoreLog(string.Format("Всего параметров: {0}", f.rows[i].params_list.Count), Color.Blue);
-                    //        foreach (fhl_websrv_var cp in f.rows[i].params_list)
-                    //        {
-                    //            addDataToCoreLog(string.Format("[{0}]\t{1}\t\t\t\t\t \"{2}\"", j++, cp.var, cp.value), Color.Blue);
-                    //        }
-                    //        addDataToCoreLog("", Color.Transparent);
-                    //    }
-                    //}
                 }
             }
             foreach (fhl_logfile_instance f in fhl_core.Files)
@@ -185,7 +172,8 @@ namespace fhl
                 toolStripProgressBar1.Maximum = AllCountLinesFromAllFiles;  // Общее количестов строк в лог файлах.
 
                 fhl_core.AllCountRequest = AllCountLinesFromAllFiles;
-                using(fhl_core.openFilesWorker =new BackgroundWorker()){
+                using (fhl_core.openFilesWorker = new BackgroundWorker())
+                {
                     fhl_core.openFilesWorker.WorkerReportsProgress = true;
                     fhl_core.openFilesWorker.WorkerSupportsCancellation = true;
                     fhl_core.parseFilesWorker = null;
@@ -198,11 +186,11 @@ namespace fhl
                     toolStripProgressBar1.Visible = true;
                     toolStripStatusLabel2.Visible = true;
                     operationName.Text = "Чтение файлов";
-
+                    открытьToolStripMenuItem.Enabled = false;
 
                 }
                 //backgroundWorker.Dispose();
-              
+
             }
         }
 
@@ -225,10 +213,7 @@ namespace fhl
                     addDataToCoreLog(fhl_dispatcher.messages[mi], Color.Black);
                     fhl_dispatcher.messages.RemoveAt(mi); //fhl_dispatcher.messages[mi].
                 }
-                //foreach (string m in fhl_dispatcher.messages)
-                //    addDataToCoreLog(m, Color.Black);
             }
-            //    fhl_dispatcher.messages.Clear();
         }
 
         public void Parseiles_WorkerProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -243,7 +228,7 @@ namespace fhl
                 for (int mi = 0; mi < fhl_dispatcher.messages.Count; mi++)
                 {
                     addDataToCoreLog(fhl_dispatcher.messages[mi], Color.Black);
-                    fhl_dispatcher.messages.RemoveAt(mi); //fhl_dispatcher.messages[mi].
+                    fhl_dispatcher.messages.RemoveAt(mi);
                 }
             }
         }
@@ -258,6 +243,7 @@ namespace fhl
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
+                открытьToolStripMenuItem.Enabled = true;
                 return;
             }
             else if (e.Error != null)
@@ -268,6 +254,7 @@ namespace fhl
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
+                открытьToolStripMenuItem.Enabled = true;
                 return;
             }
             else
@@ -291,7 +278,7 @@ namespace fhl
                 operationName.Text = "";
 
 
-                if (fhl_core.openFilesWorker.IsBusy != true && fhl_core.parseFilesWorker==null)
+                if (fhl_core.openFilesWorker.IsBusy != true && fhl_core.parseFilesWorker == null)
                 {
                     //backgroundWorker.CancelAsync();
                     toolStripProgressBar1.Minimum = 0;
@@ -313,27 +300,6 @@ namespace fhl
                     }
 
                 }
-
-                /*using (BackgroundWorker bw = new BackgroundWorker())
-                //{
-                //    if (backgroundWorker.IsBusy != true)
-                //    {
-                //        addDataToCoreLog("Начат процесс разбора строк в соответсвии с шаблном:", Color.Black);
-                //        addDataToCoreLog(String.Format("При разборе будет использовано {0} потоков из {1}", fhl_core.ThreadParse, Environment.ProcessorCount), Color.Black);
-                //        addDataToCoreLog(fhl_core.ws_cfg.log_format, Color.Black);
-
-                //        toolStripProgressBar1.Maximum = fhl_core.AllCountRequest;
-                //        toolStripProgressBar1.Value = 0;
-                //        bw.WorkerReportsProgress = true;
-                //        bw.WorkerSupportsCancellation = true;
-                //        bw.DoWork += fhl_load_data_from_files.doParse;
-                //        bw.ProgressChanged += loadData_ProgressChanged;
-                //        bw.RunWorkerCompleted += loadData_RunWorkerParseDataCompleted;
-                //        bw.RunWorkerAsync();
-                //    }
-                }*/
-
-
             }
         }
 
@@ -347,6 +313,7 @@ namespace fhl
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
+                открытьToolStripMenuItem.Enabled = true;
                 return;
 
             }
@@ -358,6 +325,8 @@ namespace fhl
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
+                открытьToolStripMenuItem.Enabled = true;
+                return;
             }
             else
             {
@@ -378,40 +347,10 @@ namespace fhl
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
                 operationName.Text = "";
+                открытьToolStripMenuItem.Enabled = true;
 
             }
-            MessageBox.Show("ВТорой воркер остановлен");
         }
-
-
-
-
-        //private void loadData_RunWorkerParseDataCompleted(object sender, RunWorkerCompletedEventArgs e)
-        //{
-        //    if (e.Cancelled == true)
-        //    {
-        //        addDataToCoreLog("", Color.Red);
-        //        addDataToCoreLog("Операция загрузки файлов отменена пользователем!", Color.Red);
-
-        //        toolStripProgressBar1.Value = 0;
-        //        toolStripProgressBar1.Visible = false;
-        //        toolStripStatusLabel2.Visible = false;
-        //    }
-        //    else
-        //    {
-        //        addDataToCoreLog("Все файлы логов загружены", Color.Blue);
-        //        foreach (fhl_logfile_instance f in fhl_core.Files)
-        //        {
-        //            addDataToCoreLog(string.Format("В файле {0} найдено {1} строк запрос к веб серверу", f.filename, f.rows.Count), Color.Blue);
-        //        }
-        //    }
-
-        //    toolStripProgressBar1.Value = 0;
-        //    toolStripProgressBar1.Visible = false;
-        //    toolStripStatusLabel2.Visible = false;
-
-        //}
-
 
         private void шаблонСтрокиToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -419,22 +358,6 @@ namespace fhl
             lff.Owner = this;
             lff.textBox1.Text = fhl_core.ws_cfg.log_format;
             lff.ShowDialog();
-        }
-
-        private void windowsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            windowsToolStripMenuItem.Checked = true;
-            unixToolStripMenuItem.Checked = false;
-            fhl_core.EndLineString = "\r\n";
-
-
-        }
-
-        private void unixToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            windowsToolStripMenuItem.Checked = false;
-            unixToolStripMenuItem.Checked = true;
-            fhl_core.EndLineString = "\t\n";
         }
 
         private void toolStripStatusLabel2_Click(object sender, EventArgs e)
@@ -448,27 +371,33 @@ namespace fhl
                 fhl_core.openFilesWorker = null;
                 fhl_core.openFilesWorker.Dispose();
                 fhl_core.parseFilesWorker = null;
-
-
-                
+            }
+            if (fhl_core.huntingWorker != null)
+            {
+                fhl_core.huntingWorker.CancelAsync();
+                fhl_core.huntingWorker.Dispose();
+                fhl_core.huntingWorker = null;
             }
         }
 
         private void начатьАнализToolStripMenuItem_Click(object sender, EventArgs e)
         {
             addDataToCoreLog("Выпускаем охотника!", Color.Green);
-            using (BackgroundWorker bw = new BackgroundWorker())
+            using (fhl_core.huntingWorker = new BackgroundWorker())
             {
                 toolStripProgressBar1.Visible = true;
                 toolStripProgressBar1.Maximum = fhl_core.AllCountRequest;
                 toolStripProgressBar1.Value = 0;
 
-                bw.WorkerReportsProgress = true;
-                bw.WorkerSupportsCancellation = true;
-                bw.DoWork += fhl_hunting.doHuntind;
-                bw.ProgressChanged += OpenFiles_WorkerProgressChanged;
-                bw.RunWorkerCompleted += HuntingWorker_compled;
-                bw.RunWorkerAsync();
+                fhl_core.huntingWorker.WorkerReportsProgress = true;
+                fhl_core.huntingWorker.WorkerSupportsCancellation = true;
+                fhl_core.huntingWorker.DoWork += fhl_hunting.doHuntind;
+                fhl_core.huntingWorker.ProgressChanged += OpenFiles_WorkerProgressChanged;
+                fhl_core.huntingWorker.RunWorkerCompleted += HuntingWorker_compled;
+                fhl_core.huntingWorker.RunWorkerAsync();
+                operationName.Text = "Поиск аномалий";
+                сохранитьToolStripMenuItem.Enabled = false;
+                открытьToolStripMenuItem.Enabled = false;
             }
         }
 
@@ -484,6 +413,10 @@ namespace fhl
                 toolStripProgressBar1.Value = 0;
                 toolStripProgressBar1.Visible = false;
                 toolStripStatusLabel2.Visible = false;
+                fhl_core.huntingWorker.Dispose();
+                fhl_core.huntingWorker = null;
+                operationName.Text = "";
+                открытьToolStripMenuItem.Enabled = true;
             }
             else
             {
@@ -526,6 +459,11 @@ namespace fhl
             toolStripProgressBar1.Value = 0;
             toolStripProgressBar1.Visible = false;
             toolStripStatusLabel2.Visible = false;
+            fhl_core.huntingWorker.Dispose();
+            fhl_core.huntingWorker = null;
+            operationName.Text = "";
+            сохранитьToolStripMenuItem.Enabled = true;
+            открытьToolStripMenuItem.Enabled = true;
 
         }
 
@@ -570,6 +508,11 @@ namespace fhl
         {
             fhl_core.FilteringOnOpeningFiles = ((ToolStripMenuItem)sender).Checked = !((ToolStripMenuItem)sender).Checked;
 
+        }
+
+        private void фильтрацияIPНаЭтапеАнализаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fhl_core.FilteringOnHunting = ((ToolStripMenuItem)sender).Checked = !((ToolStripMenuItem)sender).Checked;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -626,7 +569,11 @@ namespace fhl
             });
             form.ShowDialog();
         }
-
+        /// <summary>
+        /// Редактор PHP шелов
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pHPToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FormEditDictionaries form = new FormEditDictionaries();
@@ -642,6 +589,28 @@ namespace fhl
             });
             form.ShowDialog();
         }
+
+        /// <summary>
+        /// Редактор ASP шелов
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void aSPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormEditDictionaries form = new FormEditDictionaries();
+            form.Owner = this;
+            form.boxDictionaries.Text = String.Join("\n", fhl_dic_asp_shell.list);
+            form.button1.Click += new System.EventHandler(delegate (object s, EventArgs ev)
+            {
+                string[] ts2arr = form.boxDictionaries.Text.Split('\n');
+                ts2arr = ts2arr.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                Array.Sort(ts2arr);
+                fhl_dic_asp_shell.list = ts2arr;
+                form.Close();
+            });
+            form.ShowDialog();
+        }
+
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -673,5 +642,17 @@ namespace fhl
             }
             Properties.Settings.Default.Save();
         }
+
+        private void сохранитьToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Нужно написать сохрание результатов анализа в файл
+        }
+
+        private void выходToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        
     }
 }
